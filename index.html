@@ -331,6 +331,28 @@ body {
     border: 2px solid #0071C5;
 }
 
+.badge-requirement {
+    text-transform: none;
+}
+
+.badge-required {
+    background: #76B900;
+    color: #ffffff;
+    border: 2px solid #76B900;
+}
+
+.badge-optional {
+    background: #ffffff;
+    color: #1a1a1a;
+    border: 2px solid #0071C5;
+}
+
+.badge-not-applicable {
+    background: #e8e8e8;
+    color: #4d4d4d;
+    border: 2px solid #a8a8a8;
+}
+
 /* Coming Soon Card - greyed out background with italicized title */
 .coming-soon-card {
     background: #f5f5f5;
@@ -1019,6 +1041,51 @@ body {
 document.addEventListener('DOMContentLoaded', function() {
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
+
+    const networkingRequirements = new Map([
+        ['Introduction to the AI Factory Deployment Learning Path', 'N/A'],
+        ['AI Infrastructure and Operations Fundamentals', 'Required'],
+        ['InfiniBand Network Administration', 'Required'],
+        ['The Fundamentals of RDMA Programming', 'Optional'],
+        ['Data Center Management Made Easy with UFM Course', 'Required'],
+        ['Ethernet Switch Systems', 'Optional'],
+        ['LinkX Interconnect Solutions', 'Optional'],
+        ['Cumulus Linux Administration', 'Required'],
+        ['BlueField DPU Administration', 'Optional'],
+        ['AI Factory Reference Architectures', 'Required'],
+        ['NetQ Deployment and Installation', 'Optional'],
+        ['Spectrum-X Platform Overview', 'Required'],
+        ['Ansible Essentials for Network Engineers Course', 'Optional'],
+        ['NVIDIA Mission Control Deployment', 'Optional'],
+        ['Networking Configuration Workshop', 'N/A'],
+        ['Cabling Guide', 'Required'],
+        ['AI Factory Validation Tools', 'Required'],
+        ['Cable Validation Tool (CVT)', 'Required'],
+        ['ClusterMinder Fundamentals', 'Required'],
+        ['Validation Workshop', 'N/A']
+    ]);
+
+    document.querySelectorAll('#networking-tab .module-card').forEach(card => {
+        const title = card.querySelector('.module-title')?.textContent.trim();
+        const requirement = networkingRequirements.get(title);
+        const meta = card.querySelector('.module-meta');
+        const timing = card.querySelector('.module-timing');
+
+        if (!requirement || !meta) {
+            return;
+        }
+
+        const requirementBadge = document.createElement('span');
+        const requirementClass = requirement === 'Required'
+            ? 'badge-required'
+            : requirement === 'Optional'
+                ? 'badge-optional'
+                : 'badge-not-applicable';
+
+        requirementBadge.className = `badge badge-requirement ${requirementClass}`;
+        requirementBadge.textContent = requirement;
+        meta.insertBefore(requirementBadge, timing);
+    });
 
     // Handle tab button clicks
     tabButtons.forEach(button => {
